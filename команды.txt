@@ -1,0 +1,206 @@
+django-admin startproject mysite  # создали проект
+cd mysite
+python manage.py runserver # запустить проект
+python manage.py startapp woman # создать папку woman со всеми необходимыми файлами. Это же и будет станицей
+в settings необходимо добавить ссылку на сайт 'woman.apps.WomanConfig'
+в views приложения создать функцию представления
+в urls связать рут с функцией
+
+
+создается модель в файле models приложения.
+в settings и urls приложения указываются настройки типо MEDIA_ROOT. Особенно если это файлы
+
+И создаем файлы миграции. Они появятся в пакете migrations приложения
+python manage.py makemigrations
+
+Для просмотра sql запроса, того как будет создана таблицы
+python manage.py sqlmigrate woman 0001
+
+Теперь создаем таблицу в БД
+python manage.py migrate
+
+
+Работа с БД руками
+python manage.py shell
+
+from woman.models import Woman
+add
+w = Woman(title="Джоли", content="Биограция")
+w.save()
+w.id
+w.pk
+
+from django.db import connection
+connection.queries # выведет список sql запросов , которые выполнил джанго
+Woman.objects - менеджер записи
+Woman.objects.create(title="Джоли2", content="Биограцияd")  # сразу добавляет строку в БД
+Woman.objects.all() # посмотреть строки что находятся в БД
+
+Woman.objects.filter(title="Джоли2")  # возвращает список
+Woman.objects.filter(pk=2)  #
+Woman.objects.get(pk=2)     # вернет только один элемент. Если нет, то генерирует исключение
+Woman.objects.exclude(pk=2)  # исключить
+Woman.objects.filter(pk__gte=2)  # queryset
+Woman.objects.filter(pk__lte=4).order_by('title')  # queryset
+Woman.objects.order_by('title')  # вернет список. ASC
+Woman.objects.order_by('-title')  # обратная сортировка. DESC
+
+
+w = Woman.objects.get(pk=2)
+w.title = "Марго"
+w.save()
+
+k = Woman.objects.filter(pk__lte=4)  # выбрать ключи у которых значение меньше 4
+k.delete()  # будут удалены все найденные ранее строки
+
+Если мы изменили модель таблицы, то необходимо запустить миграцию
+python manage.py makemigrations
+
+Создаем таблицу в новом формате
+python manage.py migrate
+
+Создаем категории. Импортируем все модели
+from woman.models import *
+Category.objects.create(name="Актрисы")
+Category.objects.create(name="Певицы")
+
+Необходимо проставить нужную категорию
+w = Woman.objects.all()
+w.update(cat=1)  # вернет колличество строк что были обновлены
+
+Проверим
+w = Woman.objects.get(pk=2)
+w.cat
+w.cat.name
+
+
+Админ панель
+В настройках можно поменять язык с en-us На ru. Тогда админка будет на русском
+СОздаем суперпользователя
+python manage.py createsuperuser
+вводим логин admin
+почту куда будут приходить уведомления  admin@admin.com
+и пароль admin
+
+Далее идет регистрация моделей в админке
+И если будут узменения при отображении полей, то можно запустить миграцию, чтобы в БД мета данные обновились.
+python manage.py makemigrations
+python manage.py migrate
+
+
+
+
+ORM
+from woman.models import Woman
+from django.db import connection
+connection.queries
+Woman.objects.all()[3:8]  #  срез напрямую из БД offset 3 limit 5
+Woman.objects.order_by('-pk')  # Обратная сортировка
+Woman.objects.all().reverse()  #  сортировка по пк у всех записей. аналогично Woman.objects.order_by('pk') так же можно сделать и по фильтру
+Woman.objects.filter(pk__lte=2)  # меньше либо равное 2 . lookup
+
+выборка из таблицы по FK
+c = Category.objects.get(pk=1)
+c.woman_set.all()  # выведет из таблицы woman(имя вторичной модели) все записи у которых категория 1. Метод можно переопределить в модели Woman.
+# для foregin key добавляется атрибут related_name="get_posts"  и название такого ментода как пример
+
+lookup
+их много
+Woman.objects.filter(title__contains="ли")  # аналог Like по полю title
+Woman.objects.filter(title__icontains="ЛИ")  # игнорировать регистры. Для латиницы всегда так. для кирилицы не работает
+Woman.objects.filter(pk__in=[1,3,5])  # равен этим записям
+Woman.objects.filter(pk__in=[1,3,5], is_published=True)  # условие по нескольким AND
+Woman.objects.filter(cat__in=[1,2])  # найти категории
+Woman.objects.filter(cat_id__in=[1,2])  # найти категории. аналогично
+cats = Category.objects.all()  # можно использовать фильтр и подставить в команду ниже
+Woman.objects.filter(cat__in=cats)  # найти категории. аналогично
+
+Woman.objects.filter(cat__name="Певицы")  # join
+Woman.objects.filter(cat__name__contains="ы")
+Category.objects.filter(woman__title__contains="ы")  # на выходе будут именно категории, а не список женьщин. Могут дублироваться
+Category.objects.filter(woman__title__contains="ы").distinct()
+
+фильтр по НЕ, или
+from django.db.models import Q
+Woman.objects.filter(Q(pk__lt=3) | Q(cat_id=2))  # меньше 3 ИЛИ сат=2
+Woman.objects.filter(~Q(pk__lt=3) | Q(cat_id=2))  # обратное значит больше либо равен 3 ИЛИ
+
+Woman.objects.first() # первая запись
+Woman.objects.order_by('-pk').first() # первая запись после сортировки
+Woman.objects.last() # последняя запись
+
+время
+Woman.objects.latest('time_update') # сортировка по времени. самая первая добавленная запись
+Woman.objects.earliest('time_update') # сортировка по времени. самая последняя
+
+предыдущая , следующая запись. Поля должны быть связаны с датой и временем
+c = Category.objects.get(pk=2)
+c.get_previous_by_time_update()  # get_previous_by метод. после идет называние поля относительно которого будет применена выборка
+c.get_next_by_time_update()  # get_next_by метод.
+c.get_next_by_time_update(pk__gt=10)  # вывести след запись относительно Тех у которых pk больше 10
+
+exists, count
+c = Category.objects.get(pk=1)
+c.woman_set.exists()  # True, False
+c.woman_set.count()  #
+Woman.objects.filter(cat__in=[1,2]).count()
+
+select
+Woman.objects.values('title', 'cat_id').first()
+Woman.objects.values('title', 'cat__name').get(pk=1)  # join будет по умолчанию.
+
+агрегирующи функции.
+from django.db.models import *
+Woman.objects.aggregate(Min('cat_id'))
+Woman.objects.aggregate(Min('cat_id'), Max('cat_id') )
+Woman.objects.aggregate(catmin=Min('cat_id'), catmax=Max('cat_id'))  # переопределить ключи при выборке
+Woman.objects.aggregate(res=Sum('cat_id') - Count('cat_id'))
+Woman.objects.aggregate(res=Avg('cat_id'))  # среднее арефметическое
+Woman.objects.filter(pk__gt=4).aggregate(res=Avg('cat_id'))
+Woman.objects.values('cat_id').annotate(Count('id'))
+
+c = Cateory.objects.annotate(Count('woman'))
+c[0].woman__count  # покажет колличество записей по этой категории в таблице woman
+
+c = Cateory.objects.annotate(total=Count('woman'))  # переопределили атрибут woman__count
+c[0].total
+
+c = Cateory.objects.annotate(total=Count('woman')).filter(total__gt=0) # показать катеогрии у которых count больше 0
+
+класс F
+Woman.objects.filter(pk__gt=F('cat_id')  # pk больше значения cat_id в таблице
+Woman.objects.filter(slug='joli').update(views=F('views')+1)  # обновить колличество просмортров страницы
+или
+w = Woman.objects.get(pk=1)
+w.views = F('views')+1
+w.save()
+
+функции на стороне БД
+from django.db.models import functions
+from django.db.models.functions import Length
+
+ps = Woman.objects.annotate(len=Length('title'))
+
+RAW
+Woman.objects.raw('select * from woman_woman')
+Woman.objects.raw('select id, title from woman_woman') # обязательно указывать id
+Woman.objects.raw("select id, title from woman_woman where slig='%s'", [slug]) # ,безопасный способ через переменную. можно через запятую указать несколько
+
+
+Paginator
+from django.core.paginator import Paginator
+woman = [1,2,3,4,5,6,7,8,9]
+p = Paginator(woman, 3)  # 3 это сколько строк будет выводиться за раз на странице
+p.count()
+p.num_pages  # это len(woman)/3
+p.page_range  # range(1,5) так как p.num_pages равен 4
+
+p1 = p.page(1)
+p1.object_list  # полуить список [] элементов что принадлежат первой странице
+p1.has_next()  # есть лис следующая страница
+p1.has_previous()  # есть лис следующая страница
+p1.has_other_pages()  # есть ли другие страницы кроме этой
+p1.previous_page_number()  #
+p1.previous_page_number()  #
+
+

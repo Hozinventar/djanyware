@@ -1,0 +1,6 @@
+{% extends 'woman/base.html' %}
+{% load woman_tags %}
+
+{% block content %}
+	{% get_posts filter=selected %}
+{% endblock %}
