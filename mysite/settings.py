@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'debug_toolbar',  # debug
     "captcha",
     'django_celery_results',  # celerymy
+    'django_celery_beat',
     'woman.apps.WomanConfig'
 ]
 
@@ -157,11 +158,11 @@ INTERNAL_IPS = ["127.0.0.1", ]  # debug debug_toolbar
 
 # кеширование страниц. Если не указывать, то сохранит в память. лучше импользовать только для динамиеских страниц.
 CACHES = {
-    # 'default': {
-    #     'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
-    #     'LOCATION': os.path.join(BASE_DIR, 'cache'),
-    # },
     'default': {
+        'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
+        'LOCATION': os.path.join(BASE_DIR, 'cache'),
+    },
+    'django-cache': {
             'BACKEND': 'django.core.cache.backends.redis.RedisCache',
             'LOCATION': "redis://127.0.0.1:6379/1",
         }
@@ -171,5 +172,8 @@ CACHES = {
 CELERY_BROKER_URL = "redis://127.0.0.1:6379/0"  # celerymy
 
 CELERY_RESULT_BACKEND = 'django-db'  # celerymy
-CELERY_CACHE_BACKEND = 'default'  # определили в CACHES # celerymy
+# CELERY_CACHE_BACKEND = 'default'  # определили в CACHES # celerymy
+CELERY_CACHE_BACKEND = 'django-cache'  # определили в CACHES # celerymy
 # CELERY_RESULT_BACKEND = "redis://localhost:6379"
+
+CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler" # celerymy

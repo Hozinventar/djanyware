@@ -19,5 +19,9 @@ redis
 селери резалт
 django-redis
 
+переодические задачи
+python -m pip install django-celery-beat
 
-from
+Необходмо в настройки добавить CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"
+запускаем процесс
+celery -A mysite beat -l INFO

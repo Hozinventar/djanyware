@@ -8,8 +8,9 @@ from mysite.celery import debug_task
 # debug_task.delay()
 
 # таска с ретерном
-from woman.tasks import bar
-# bar.delay()
+from woman.tasks import bar, add
+bar.delay()
+add.delay(1, 2)
 
 from django_celery_results.models import TaskResult
 r = TaskResult.objects.last()
