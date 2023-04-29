@@ -2,8 +2,13 @@ import os
 os.environ["DJANGO_SETTINGS_MODULE"] = "mysite.settings"
 import django
 django.setup()
-from woman.tasks import add
 
-add.delay(1, 2)
+# таска без ретерна
+from mysite.celery import debug_task
+debug_task.delay()
 
+# таска с ретерном
+from woman.tasks import bar
+bar.delay()
 
+print('d')

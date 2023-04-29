@@ -1,0 +1,20 @@
+добавит в settings
+
+CELERY_BROKER_URL = "redis://127.0.0.1:6379/0"
+
+запустить докер
+
+docker run -p 6379:6379 --name radis-celery -d redis
+
+запускаем
+celery -A mysite worker -l info
+
+под windows воркер может не выполнять задачи. поэтому
+pip install eventlet
+celery -A mysite worker --loglevel=info -P eventlet
+
+для результатов должен стоять питон пакеты
+pip install:
+redis
+селери резалт
+django-redis

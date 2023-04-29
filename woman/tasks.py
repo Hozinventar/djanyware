@@ -1,6 +1,10 @@
 # from demoapp.models import Widget
-
 from celery import shared_task
+
+
+@shared_task
+def bar():
+    return "hello mzfaka"
 
 
 @shared_task

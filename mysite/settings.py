@@ -43,7 +43,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'debug_toolbar',  # debug
     "captcha",
-    'django_celery_results',
+    'django_celery_results',  # celerymy
     'woman.apps.WomanConfig'
 ]
 
@@ -157,16 +157,19 @@ INTERNAL_IPS = ["127.0.0.1", ]  # debug debug_toolbar
 
 # кеширование страниц. Если не указывать, то сохранит в память. лучше импользовать только для динамиеских страниц.
 CACHES = {
+    # 'default': {
+    #     'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
+    #     'LOCATION': os.path.join(BASE_DIR, 'cache'),
+    # },
     'default': {
-        'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
-        'LOCATION': os.path.join(BASE_DIR, 'cache'),
-    }
+            'BACKEND': 'django.core.cache.backends.redis.RedisCache',
+            'LOCATION': "redis://127.0.0.1:6379/1",
+        }
 }
 
-CELERY_TIMEZONE = "Australia/Tasmania"
-CELERY_TASK_TRACK_STARTED = True
-CELERY_TASK_TIME_LIMIT = 30 * 60
-# CELERY_RESULT_BACKEND = 'django-db'
-# CELERY_CACHE_BACKEND = 'django-cache'
-CELERY_BROKER_URL = "redis://localhost:6379"
-CELERY_RESULT_BACKEND = "redis://localhost:6379"
+# CELERY_BROKER_URL = "redis://localhost:6379/0"
+CELERY_BROKER_URL = "redis://127.0.0.1:6379/0"  # celerymy
+
+CELERY_RESULT_BACKEND = 'django-db'  # celerymy
+CELERY_CACHE_BACKEND = 'default'  # определили в CACHES # celerymy
+# CELERY_RESULT_BACKEND = "redis://localhost:6379"
