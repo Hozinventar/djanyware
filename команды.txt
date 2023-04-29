@@ -1,3 +1,16 @@
+как в коде инициировать приложение
+import os
+os.environ["DJANGO_SETTINGS_MODULE"] = "mysite.settings"
+import django
+django.setup()
+from django.contrib.auth.models import User
+a = User.objects.create(username="lala")
+a.set_password("lala")
+a.is_superuser = True
+a.is_staff = True
+a.save()
+
+
 django-admin startproject mysite  # создали проект
 cd mysite
 python manage.py runserver # запустить проект
