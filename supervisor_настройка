@@ -1,0 +1,49 @@
+venv Дожен быть в статусе activate
+
+ставим
+pip install supervisor
+
+или для unix
+sudo apt install supervisor
+тогда сервис запуститься автоматом.
+
+Проверяем что все ок.
+echo_supervisord_conf
+
+генерируем файл конфига если хотим отдельный. указываем путь куда. например в текущей директории проекта в папке supervisor
+echo_supervisord_conf > ./supervisord.conf
+
+supervisord -c ./supervisor/supervisord.conf
+
+Заходим в директорию /etc/supervisor/supervisord.conf и редактируем этот файл
+
+для вебки добавлем строки в кофиг
+;[inet_http_server]         ; inet (TCP) server disabled by default
+;port=127.0.0.1:9001        ; ip_address:port specifier, *:port for all iface
+
+проверим статус
+sudo systemctl status supervisor
+ps aux | grep supervisor
+остановим
+sudo systemctl stop supervisor
+а теперь запустим
+sudo systemctl start supervisor
+проверим порты
+sudo apt install net-tools если служба не установлена
+netstat -tupln
+
+конфиг сканирует файлы конфига тут
+[include]
+files = /etc/supervisor/conf.d/*.conf
+
+добавлем файл вида
+[program:supertest]
+command=python -u super_test.py  ; обязательно с флагом u. тогда логи будут запичсвать в файл. по обыному принту
+directory=/home/qwe/pychramProject/
+stdout_logfile=/home/qwe/pychramProject/super_test.log
+redirect_stderr=true
+
+обновляем конфиги
+sudo supervisorctl reread
+запускаем. даже если потом поменять файл конфига достаточно выполнить только апдейт
+sudo supervisorctl update
