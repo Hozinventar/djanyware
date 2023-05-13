@@ -1,0 +1,39 @@
+машина на винде. запустим убунту
+
+docker run -it debian /bin/bash
+
+ставим питон
+https://computingforgeeks.com/how-to-install-python-on-debian-linux/
+sudo apt update && sudo apt upgrade -y
+sudo apt install build-essential zlib1g-dev libncurses5-dev libgdbm-dev libnss3-dev libssl-dev libreadline-dev libffi-dev libsqlite3-dev wget libbz2-dev
+wget https://www.python.org/ftp/python/3.10.11/Python-3.10.11.tgz
+tar -xf Python-3.10.*.tgz
+cd Python-3.10.*/
+./configure --prefix=/usr/local --enable-optimizations --enable-shared LDFLAGS="-Wl,-rpath /usr/local/lib"
+make -j $(nproc)
+sudo make altinstall
+pip3.10 install --user --upgrade pip
+
+mkdir /home/projects/
+
+# python3.10 -m venv venv  # когда в проекте будем ставить окружение
+
+apt install git
+
+после всех изменений нужно сохранить их
+https://phoenixnap.com/kb/how-to-commit-changes-to-docker-image
+sudo docker ps -a
+sudo docker commit 9abca5548133 debian_p
+docker images  покажет новый образ.
+
+подключить интрерактивно если запущен контейнер
+docker exec -it 9abca5548133 bash
+winpty docker exec -it 9abca5548133 bash  # для cigwin
+
+ставим монитор контейнеров
+docker volume create portainer_data
+docker run -d -p 9000:9000 --name portainer --restart always -v /var/run/docker.sock:/var/run/docker.sock -v portainer_data:/data portainer/portainer
+docker ps
+
+ставим vnc
+https://antoshabrain.blogspot.com/2021/06/debian-tigervnc-xfce.html

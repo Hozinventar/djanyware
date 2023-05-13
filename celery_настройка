@@ -25,3 +25,5 @@ python -m pip install django-celery-beat
 Необходмо в настройки добавить CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"
 запускаем процесс
 celery -A mysite beat -l INFO
+
+далее через админку выполняется настройка 
