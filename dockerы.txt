@@ -1,6 +1,31 @@
+C:\Users\maguta\AppData\Local\Docker\wsl\data
+https://forums.docker.com/t/where-are-images-stored/9794/26
+https://docs.docker.com/engine/reference/commandline/dockerd/
+C:\ProgramData\Docker\config\daemon.json
+
 машина на винде. запустим убунту
 
 docker run -it debian /bin/bash
+
+можно воспользоваться wsl и не ставить докер а все запустить в wsl
+https://linuxhint.com/start-debian-gui-windows-10-wsl/
+все по инструкции, но может быть проблема с gpg при обновлении
+тогда https://www.nixp.ru/recipes/4.html
+gpg --keyserver keyring.debian.org --recv-keys 112695A0E562B32A
+
+https://tecadmin.net/fix-dirmngr-no-such-file-or-directory/
+sudo apt update
+sudo apt install dirmngr --install-recommends
+
+если не подписывает, то
+https://linuxhint.com/solve-gpg-no-valid-openpgp-data-found-error/
+sudo apt-get install ca-certificates
+nano ~/.bashrc
+export CURL_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt
+
+закрыть сессию и зайти снова. теперь и далее по инструкции
+$ sudo apt full-upgrade
+
 
 ставим питон
 https://computingforgeeks.com/how-to-install-python-on-debian-linux/
@@ -37,3 +62,4 @@ docker ps
 
 ставим vnc
 https://antoshabrain.blogspot.com/2021/06/debian-tigervnc-xfce.html
+sudo apt install xfce4 xfce4-goodies xorg dbus-x11 x11-xserver-utils
