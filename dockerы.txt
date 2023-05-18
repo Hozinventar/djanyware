@@ -3,29 +3,49 @@ https://forums.docker.com/t/where-are-images-stored/9794/26
 https://docs.docker.com/engine/reference/commandline/dockerd/
 C:\ProgramData\Docker\config\daemon.json
 
+docker
 машина на винде. запустим убунту
-
 docker run -it debian /bin/bash
 
+wsl
 можно воспользоваться wsl и не ставить докер а все запустить в wsl
 https://linuxhint.com/start-debian-gui-windows-10-wsl/
-все по инструкции, но может быть проблема с gpg при обновлении
-тогда https://www.nixp.ru/recipes/4.html
-gpg --keyserver keyring.debian.org --recv-keys 112695A0E562B32A
+все по инструкции,
+wsl --set-default-version 2
+wsl --install -d Debian
+sudo apt update && sudo apt upgrade -y
 
-https://tecadmin.net/fix-dirmngr-no-such-file-or-directory/
-sudo apt update
-sudo apt install dirmngr --install-recommends
+sudo nano /etc/apt/sources.list
 
+deb http://deb.debian.org/debian bullseye main contrib non-free
+deb http://deb.debian.org/debian bullseye-updates main contrib non-free
+deb http://security.debian.org/debian-security bullseye-security main contrib non-free
+
+sudo apt-get update
+sudo apt clean && sudo apt update
+
+sudo apt install dirmngr --install-recommends  # https://tecadmin.net/fix-dirmngr-no-such-file-or-directory/
+sudo apt-get install ca-certificates
+
+sudo apt full-upgrade
+
+тут может быть проблема с gpg при обновлении
+тогда
+gpg --keyserver keyring.debian.org --recv-keys 112695A0E562B32A  # https://www.nixp.ru/recipes/4.html
 если не подписывает, то
 https://linuxhint.com/solve-gpg-no-valid-openpgp-data-found-error/
-sudo apt-get install ca-certificates
 nano ~/.bashrc
 export CURL_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt
 
-закрыть сессию и зайти снова. теперь и далее по инструкции
-$ sudo apt full-upgrade
+Если все хорошо
+sudo apt autoremove
+cat /etc/os-release
+sudo apt update && sudo apt upgrade -y  # проверим
 
+sudo apt-get install git
+ssh-keygen
+
+sudo apt-get install python3.10
 
 ставим питон
 https://computingforgeeks.com/how-to-install-python-on-debian-linux/
@@ -38,13 +58,14 @@ cd Python-3.10.*/
 make -j $(nproc)
 sudo make altinstall
 pip3.10 install --user --upgrade pip
+python3.10 -m venv py_venv
+source py_venv/bin/activate
 
 mkdir /home/projects/
 
 # python3.10 -m venv venv  # когда в проекте будем ставить окружение
 
-apt install git
-
+Docker
 после всех изменений нужно сохранить их
 https://phoenixnap.com/kb/how-to-commit-changes-to-docker-image
 sudo docker ps -a
