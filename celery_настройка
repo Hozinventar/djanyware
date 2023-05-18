@@ -1,3 +1,7 @@
+pip install celery
+pip install django_celery_results
+pip install django_celery_beat
+
 добавит в settings
 
 CELERY_BROKER_URL = "redis://127.0.0.1:6379/0"
