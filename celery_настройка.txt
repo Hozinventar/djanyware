@@ -1,14 +1,22 @@
 pip install celery
 pip install django_celery_results
 pip install django_celery_beat
+pip install django-redis
+
 
 добавит в settings
 
 CELERY_BROKER_URL = "redis://127.0.0.1:6379/0"
 
 запустить докер
-
 docker run -p 6379:6379 --name radis-celery -d redis
+
+для wsl
+curl -fsSL https://packages.redis.io/gpg | sudo gpg --dearmor -o /usr/share/keyrings/redis-archive-keyring.gpg
+echo "deb [signed-by=/usr/share/keyrings/redis-archive-keyring.gpg] https://packages.redis.io/deb $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/redis.list
+sudo apt-get update
+sudo apt-get install redis
+redis-server --daemonize yes  # с конфигом по умолчнию
 
 запускаем
 celery -A mysite worker -l info

@@ -43,11 +43,14 @@ cat /etc/os-release
 sudo apt update && sudo apt upgrade -y  # проверим
 
 sudo apt-get install git
+sudo apt-get install curl
+sudo apt-get install vim
 ssh-keygen
 
 sudo apt-get install python3.10
 
 ставим питон
+sudo apt install lsb-release  минимальный набор пакетов. подходит для контйнеров
 https://computingforgeeks.com/how-to-install-python-on-debian-linux/
 sudo apt update && sudo apt upgrade -y
 sudo apt install build-essential zlib1g-dev libncurses5-dev libgdbm-dev libnss3-dev libssl-dev libreadline-dev libffi-dev libsqlite3-dev wget libbz2-dev
