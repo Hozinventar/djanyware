@@ -13,7 +13,7 @@ class WomanAdmin(admin.ModelAdmin):
     list_editable = ("is_published", "cat")  # эти поля можно поменять в режиме отображения список
     list_filter = ("is_published", "time_create") # по этим полям можно фильтроваь в режиме отображения список
     prepopulated_fields = {"slug": ("title",)}  # автозаполнение на основе поля name когда редактируем
-    fields = ("title", "slug", "content", "photo", "get_html_photo", "time_create", "time_update")  # переопределяем поля, что можно изменить
+    fields = ("title", "slug", "content", "photo", "get_html_photo", "time_create", "time_update", "cat")  # переопределяем поля, что можно изменить
     readonly_fields = ("time_create", "time_update", "get_html_photo")  # поля что нельзя редактировать. только для чтения.
     # Должны быть добавлены в атрибут fields
 

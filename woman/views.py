@@ -13,8 +13,12 @@ from .models import *
 from .forms import *
 from .utils import DataMixin
 from django.contrib.auth.mixins import LoginRequiredMixin
+
 from rest_framework import generics
+from rest_framework.views import APIView  # самый базовый функционал. все от него наследуются
+from rest_framework.response import Response
 from .models import WomanSerializer
+from django.forms import model_to_dict  # метод возвращает словарь из модели
 
 menu = [
     {"title": "О сайте", "url_name": "about"},
@@ -24,8 +28,28 @@ menu = [
 
 
 class WomanApi(generics.ListAPIView):
+    """ первый тестовый """
     queryset = Woman.objects.all()
     serializer_class = WomanSerializer
+
+
+class WomanApi2(APIView):
+    def get(self, request):
+        """ будет отвечать на гет запросы"""
+        # return Response({'1': 2})
+        queryset = Woman.objects.all().values()  #
+        return Response(queryset)
+
+    def post(self, request):
+        """ если отправить пост, то вернет этот ответ. можно даже Json не передавать"""
+        # return Response({'1': 2})
+        data = request.data
+        wm = Woman.objects.create(
+            title=data['title'],
+            content=data['content'],
+            cat_id=data['cat_id']
+        )
+        return Response(model_to_dict(wm))
 
 
 class Home(DataMixin, ListView):
