@@ -13,13 +13,19 @@ from .models import *
 from .forms import *
 from .utils import DataMixin
 from django.contrib.auth.mixins import LoginRequiredMixin
-
+from rest_framework import generics
+from .models import WomanSerializer
 
 menu = [
     {"title": "О сайте", "url_name": "about"},
     {"title": "Добавить статью", "url_name": "add_page"},
     {"title": "Обратная связь", "url_name": "contact"},
     ]
+
+
+class WomanApi(generics.ListAPIView):
+    queryset = Woman.objects.all()
+    serializer_class = WomanSerializer
 
 
 class Home(DataMixin, ListView):
@@ -239,8 +245,6 @@ def addpage(request):
         'form': form
                }
     return render(request, "woman/addpage.html", context=context)
-
-
 
 
 def about(request):

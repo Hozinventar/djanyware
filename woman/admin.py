@@ -35,10 +35,12 @@ class CategoryAdmin(admin.ModelAdmin):
     prepopulated_fields = {"slug": ("name",)}  # автозаполнение на основе поля name
 
 
+@admin.register(Human)
 class HumanAdmin(admin.ModelAdmin):
     list_display = ('pk', "name", "age", "work")
 
 
+@admin.register(Work)
 class WorkAdmin(admin.ModelAdmin):
     list_display = ('pk', "name", "street", "funcstr")
 
@@ -47,6 +49,7 @@ admin.site.register(Woman, WomanAdmin)
 admin.site.register(Category, CategoryAdmin)
 admin.site.site_title = "Панель о женьщинах"
 admin.site.site_header = "о женьщинах2"
-admin.site.register(Human, HumanAdmin)
-admin.site.register(Work, WorkAdmin)
+
+# admin.site.register(Human, HumanAdmin)
+# admin.site.register(Work, WorkAdmin)
 

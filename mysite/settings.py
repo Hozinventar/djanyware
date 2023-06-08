@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     "captcha",
     'django_celery_results',  # celerymy
     'django_celery_beat',
+    'rest_framework',
     'woman.apps.WomanConfig'
 ]
 

@@ -19,5 +19,6 @@ urlpatterns = [
     # path('post/<slug:post_slug>/', show_post_slug, name="post_slug"),
     path('post/<slug:post_slug>/', ShowPost.as_view(), name="post_slug"),
     # path('category/<int:id>/', show_by_category, name="categoryy"),  # через функцию
-    path('category/<slug:cat_slug>/', CategoryBy.as_view(), name="category")
+    path('category/<slug:cat_slug>/', CategoryBy.as_view(), name="category"),
+    path('api/v1/womans', WomanApi.as_view())
 ]

@@ -2,6 +2,8 @@ from django.db import models
 from django.urls import reverse
 import pickle
 import codecs
+from rest_framework import serializers
+
 
 class Woman(models.Model):
     """ порядок, последовательность атрибутов влияет на отображение в форме """
@@ -38,6 +40,12 @@ class Woman(models.Model):
         ordering = ['-time_create', 'title']  # обратная сортировка по time_create.
         # таблица будет показана в таком виде и в админке и на основной странице
         # так же это важно для пагинации
+
+
+class WomanSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Woman
+        fields = ('title', 'cat_id')
 
 
 class Category(models.Model):
@@ -92,3 +100,4 @@ class Work(models.Model):
         # self.funcstr = pickle.dumps(self.funcstr)
 
     # function = property(get_func, set_func)
+
