@@ -28,12 +28,13 @@ menu = [
 
 
 class WomanApi(generics.ListAPIView):
-    """ первый тестовый """
+    """ первый тестовый через сериализатор"""
     queryset = Woman.objects.all()
     serializer_class = WomanSerializer
 
 
 class WomanApi2(APIView):
+    """ Наследуемся от базового класса без сериализации"""
     def get(self, request):
         """ будет отвечать на гет запросы"""
         # return Response({'1': 2})
@@ -50,6 +51,35 @@ class WomanApi2(APIView):
             cat_id=data['cat_id']
         )
         return Response(model_to_dict(wm))
+
+
+class WomanApi3(APIView):
+    """ Наследуемся от базового класса со своим кастомным сериализатором
+    Вот этот текст является DOC строкой. и появится в описании к методу
+    """
+    def get(self, request):
+        queryset = Woman.objects.all()
+        return Response(WomanSerializer2(queryset, many=True).data)  # many говорит, что будет не одна строка
+
+    def post(self, request):
+        """ если отправить пост, то вернет этот ответ. можно даже Json не передавать"""
+        # return Response({'1': 2})
+        data = request.data
+
+        # Проверка корректность принятых данных
+        seri = WomanSerializer2(data=data)
+        seri.is_valid(raise_exception=True)  # ответ в виде json строки. Иначе будет как html
+
+        # таким методом сразу создает в БД
+        # wm = Woman.objects.create(
+        #     title=data['title'],
+        #     slug="asd",
+        #     content=data['content'],
+        #     cat_id=data['cat_id']
+        # )
+        # Таким способом просто принтуем и смотрим что сериализация прошла
+        wm = Woman(**data)
+        return Response(WomanSerializer2(wm).data)
 
 
 class Home(DataMixin, ListView):

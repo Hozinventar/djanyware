@@ -21,5 +21,6 @@ urlpatterns = [
     # path('category/<int:id>/', show_by_category, name="categoryy"),  # через функцию
     path('category/<slug:cat_slug>/', CategoryBy.as_view(), name="category"),
     path('api/v1/womans', WomanApi.as_view()),
-    path('api/v1/womans2', WomanApi2.as_view())
+    path('api/v1/womans2', WomanApi2.as_view()),
+    path('api/v1/womans3', WomanApi3.as_view())
 ]

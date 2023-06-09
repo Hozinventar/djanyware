@@ -3,6 +3,8 @@ from django.urls import reverse
 import pickle
 import codecs
 from rest_framework import serializers
+from rest_framework.renderers import JSONRenderer
+from rest_framework.parsers import JSONParser
 
 
 class Woman(models.Model):
@@ -25,6 +27,7 @@ class Woman(models.Model):
         return self.title  # если это не прописать, то в админ панели будет отображаться как объект. А так будет как текст
 
     def get_url(self):
+        """ совой кастомный метод"""
         # return reverse("postt", kwargs={"id": self.pk})  # вариант через id
         return reverse("post_slug", kwargs={"post_slug": self.slug})  # через слаг
 
@@ -43,9 +46,45 @@ class Woman(models.Model):
 
 
 class WomanSerializer(serializers.ModelSerializer):
+    """ ресты уже готовый сериализатор"""
     class Meta:
         model = Woman
         fields = ('title', 'cat_id')
+
+
+class WomanSerializer2(serializers.Serializer):
+    """ ресты урок по своему сериализатору, где контролируем этот этап"""
+    title = serializers.CharField(max_length=255)
+    content = serializers.CharField()
+    time_create = serializers.DateTimeField(read_only=True)
+    time_update = serializers.DateTimeField(read_only=True)
+    is_published = serializers.BooleanField(default=True)
+    cat_id = serializers.IntegerField()  #
+
+
+class WomanModel:
+    """ Пример ресты урок по своему сериализатору """
+    def __init__(self, title, context):
+        self.title = title
+        self.context = context
+
+
+def encode():
+    """ пример работы преобразование данных.  из словаря в байт строку"""
+    model = WomanModel('lala', "werwerwer")
+    model_sr = WomanSerializer2(model)
+    json = JSONRenderer().render(model_sr.data)  # отдает в виде байтов
+    return json
+
+
+def decode():
+    """ пример работы преобразование данных.  из байт строки в словарь"""
+    import io
+    stream = io.BytesIO(b'{"lala": "qwe"}')
+    data = JSONParser().parse(stream)
+    sr = WomanSerializer2(data=data)  # при декодировании используется атрибут data
+    if sr.is_valid():  # Проверяем, а верные ли данные пришли
+        print(sr.validated_data)
 
 
 class Category(models.Model):
