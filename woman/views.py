@@ -33,6 +33,13 @@ class WomanApi(generics.ListAPIView):
     serializer_class = WomanSerializer
 
 
+class WomanApiList(generics.ListCreateAPIView):
+    """ GET и POST запросы. тот же гет как в ListAPIView, но еще и пост """
+    queryset = Woman.objects.all()
+    serializer_class = WomanSerializer
+
+
+# поиграться
 class WomanApi2(APIView):
     """ Наследуемся от базового класса без сериализации"""
     def get(self, request):
@@ -53,6 +60,7 @@ class WomanApi2(APIView):
         return Response(model_to_dict(wm))
 
 
+# поиграться
 class WomanApi3(APIView):
     """ Наследуемся от базового класса со своим кастомным сериализатором
     Вот этот текст является DOC строкой. и появится в описании к методу
@@ -80,6 +88,50 @@ class WomanApi3(APIView):
         # Таким способом просто принтуем и смотрим что сериализация прошла
         wm = Woman(**data)
         return Response(WomanSerializer2(wm).data)
+
+
+# поиграться
+class WomanApi4(APIView):
+    """ методы создания и удаления
+    """
+    def get(self, request):
+        queryset = Woman.objects.all()
+        return Response(WomanSerializer4(queryset, many=True).data)  # many говорит, что будет не одна строка
+
+    def post(self, request):
+        # Проверка корректность принятых данных
+        seri = WomanSerializer4(data=request.data)
+        seri.is_valid(raise_exception=True)
+        seri.save()  # это метод create в WomanSerializer4
+        return Response(seri.data)
+
+    def put(self, request, *args, **kwargs):
+        pk = kwargs.get("pk", None)
+        if not pk:
+            return Response("Method not allowed")
+
+        try:
+            inst = Woman.objects.get(pk=pk)
+        except:
+            return Response("Method not allowed")
+
+        seri = WomanSerializer4(data=request.data, instance=inst)  # сериализатор понимает что передан аргумент instance
+        # и поэтому при вызове save он использует функцию Update
+        seri.is_valid(raise_exception=True)
+        seri.save()
+        return Response(seri.data)
+
+    def delete(self, request, *args, **kwargs):
+        pk = kwargs.get("pk", None)
+        if not pk:
+            return Response("Method not allowed")
+
+        try:
+            inst = Woman.objects.get(pk=pk)
+            inst.delete()
+        except:
+            return Response("Method not allowed")
+        return Response(f"deleted {pk}")
 
 
 class Home(DataMixin, ListView):

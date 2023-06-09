@@ -49,7 +49,8 @@ class WomanSerializer(serializers.ModelSerializer):
     """ ресты уже готовый сериализатор"""
     class Meta:
         model = Woman
-        fields = ('title', 'cat_id')
+        fields = ('title', "content", 'cat')  # какие поля возвращаем клиенту
+        # fields = "__all__"  # если вернуть все поля модели
 
 
 class WomanSerializer2(serializers.Serializer):
@@ -60,6 +61,35 @@ class WomanSerializer2(serializers.Serializer):
     time_update = serializers.DateTimeField(read_only=True)
     is_published = serializers.BooleanField(default=True)
     cat_id = serializers.IntegerField()  #
+
+
+class WomanSerializer4(serializers.Serializer):
+    """ ресты урок по своему сериализатору, где контролируем этот этап"""
+    pk = serializers.IntegerField(read_only=True)
+    title = serializers.CharField(max_length=255)
+    content = serializers.CharField()
+    slug = serializers.CharField(read_only=True)
+    time_create = serializers.DateTimeField(read_only=True)
+    time_update = serializers.DateTimeField(read_only=True)
+    is_published = serializers.BooleanField(default=True)
+    cat_id = serializers.IntegerField()  #
+
+    def create(self, validated_data):
+        # return Woman.objects.create(**validated_data)
+        """ ниже способ переопределить поле slug которое является обязательным """
+        w = Woman(**validated_data)
+        w.slug = w.title
+        w.save()
+        return w
+
+    def update(self, instance: Woman, validated_data):
+        """ instance ссылка на объект БД. в примере это Woman """
+        for k, v in validated_data.items():
+            setattr(instance, k, v)
+        instance.time_update = instance.time_update
+        instance.slug = instance.title
+        instance.save()
+        return instance
 
 
 class WomanModel:
