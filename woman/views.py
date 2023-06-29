@@ -39,6 +39,18 @@ class WomanApiList(generics.ListCreateAPIView):
     serializer_class = WomanSerializer
 
 
+class WomanApiUpdate(generics.UpdateAPIView):
+    """Provides put and patch method handlers."""
+    queryset = Woman.objects.all()
+    serializer_class = WomanSerializer
+
+
+class WomanApiCRUD(generics.RetrieveUpdateDestroyAPIView):
+    """CRUD"""
+    queryset = Woman.objects.all()
+    serializer_class = WomanSerializer
+
+
 # поиграться
 class WomanApi2(APIView):
     """ Наследуемся от базового класса без сериализации"""

@@ -178,3 +178,12 @@ CELERY_CACHE_BACKEND = 'django-cache'  # определили в CACHES # celery
 # CELERY_RESULT_BACKEND = "redis://localhost:6379"
 
 CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler" # celerymy
+
+# https://www.django-rest-framework.org/api-guide/renderers/
+REST_FRAMEWORK = {
+    'DEFAULT_RENDERER_CLASSES': [
+        'rest_framework.renderers.JSONRenderer',
+        'rest_framework.renderers.BrowsableAPIRenderer',  # если закоментировать эту сроку, то через браузер можно получить только гет.
+        # ни какого СВАГЕРа
+    ]
+}
