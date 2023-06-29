@@ -14,7 +14,7 @@ from .forms import *
 from .utils import DataMixin
 from django.contrib.auth.mixins import LoginRequiredMixin
 
-from rest_framework import generics
+from rest_framework import generics, viewsets
 from rest_framework.views import APIView  # самый базовый функционал. все от него наследуются
 from rest_framework.response import Response
 from .models import WomanSerializer
@@ -25,6 +25,16 @@ menu = [
     {"title": "Добавить статью", "url_name": "add_page"},
     {"title": "Обратная связь", "url_name": "contact"},
     ]
+
+
+# можно руками наследоваться от всех классов , что в ModelViewSet. А можно исключить не нужные миксины и ограничить до нужного поведения
+class WomanViewSet(viewsets.ModelViewSet):
+    """ CRUD. класс которые объеденяет все остальные generics, чтобы не дублировать код как представлен в классах ниже
+    как по всей таблице так и по id
+    https://www.django-rest-framework.org/api-guide/viewsets/#viewset-actions
+    """
+    queryset = Woman.objects.all()
+    serializer_class = WomanSerializer
 
 
 class WomanApi(generics.ListAPIView):
@@ -46,7 +56,7 @@ class WomanApiUpdate(generics.UpdateAPIView):
 
 
 class WomanApiCRUD(generics.RetrieveUpdateDestroyAPIView):
-    """CRUD"""
+    """CRUD Но только по pk"""
     queryset = Woman.objects.all()
     serializer_class = WomanSerializer
 

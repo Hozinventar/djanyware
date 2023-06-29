@@ -1,6 +1,12 @@
 from django.urls import path, include, re_path
 from django.views.decorators.cache import cache_page
 from .views import *
+from rest_framework import routers
+
+rout = routers.SimpleRouter()
+rout.register(r'womans', WomanViewSet)  # регистрируем рутер , чтобы затем использовать ViewSet и не дулировать строки с pk id
+
+
 
 urlpatterns = [
     # path('', index, name="home"),  # Начальная страница. Name переопределяет rout
@@ -20,7 +26,10 @@ urlpatterns = [
     path('post/<slug:post_slug>/', ShowPost.as_view(), name="post_slug"),
     # path('category/<int:id>/', show_by_category, name="categoryy"),  # через функцию
     path('category/<slug:cat_slug>/', CategoryBy.as_view(), name="category"),
-    path('api/v1/womans', WomanApi.as_view()),
+    path('api/v1/', include(rout.urls)),  # стандартный простой способ создать api по таблице. внимательно рут указан в rout. не тут
+    path('api/v1/womansmodels', WomanViewSet.as_view({'get': 'list'})),  # необходимо указывать и переопределять методы
+    path('api/v1/womansmodels/<int:pk>/', WomanViewSet.as_view({'put': 'update'})),
+    path('api/v1/womanss', WomanApi.as_view()),
     path('api/v1/womansgetpost', WomanApiList.as_view()),
     path('api/v1/womanslist/<int:pk>/', WomanApiUpdate.as_view()),
     path('api/v1/womanscrud/<int:pk>/', WomanApiCRUD.as_view()),

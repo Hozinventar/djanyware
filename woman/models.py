@@ -49,7 +49,7 @@ class WomanSerializer(serializers.ModelSerializer):
     """ ресты уже готовый сериализатор"""
     class Meta:
         model = Woman
-        fields = ('title', "content", 'cat')  # какие поля возвращаем клиенту
+        fields = ('title', "content", 'cat')  # какие поля возвращаем клиенту. даже если в URL/pk передать ключ все будет работать.
         # fields = "__all__"  # если вернуть все поля модели
 
 
