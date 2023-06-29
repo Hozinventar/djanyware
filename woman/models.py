@@ -145,12 +145,25 @@ class Category(models.Model):
 
 class Human(models.Model):
 
+    def __repr__(self):
+        return self.name
+
+    def __str__(self):
+        return self.name
+
     name = models.CharField(max_length=255, db_index=True)
     age = models.IntegerField()
     work = models.ForeignKey('Work', on_delete=models.PROTECT)
 
 
 class Work(models.Model):
+
+    def __repr__(self):
+        return self.name
+
+    def __str__(self):
+        return self.name
+
     name = models.CharField(max_length=255, db_index=True)
     street = models.CharField(max_length=255)
     funcstr = models.TextField()
@@ -170,3 +183,14 @@ class Work(models.Model):
 
     # function = property(get_func, set_func)
 
+
+class Work2(models.Model):
+
+    def __repr__(self):
+        return self.name
+
+    def __str__(self):
+        return self.name
+
+    name = models.CharField(max_length=255, db_index=True)
+    human = models.ForeignKey('Human', on_delete=models.CASCADE)

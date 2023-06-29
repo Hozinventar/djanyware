@@ -217,3 +217,26 @@ p1.previous_page_number()  #
 p1.previous_page_number()  #
 
 
+Directly creating model instances on ForeignKey field
+
+b = Human()
+b.name = "Аркадий"
+b.age = 12
+b.work = Work()
+b.work.name = "Foo Bar"
+b.work.save()
+b.save()
+
+# выборка по связанному полю ворк. Покажет всех human_set у которых есть эта группа.
+h = Work.objects.get(pk=1)
+h.human_set.all()
+
+
+Создать объект или вернуть его по ключу "name".
+since a primary key/unique column constraint. тут же передаются доп. параметры
+
+myuser, created = Human.objects.get_or_create(name="Аркадий4", defaults={'age': 12, 'work': Work.objects.get_or_create(name="asdas2", street="asd", funcstr="asd")[0]})
+
+
+
+
