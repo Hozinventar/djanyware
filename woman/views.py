@@ -17,6 +17,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from rest_framework import generics, viewsets
 from rest_framework.views import APIView  # самый базовый функционал. все от него наследуются
 from rest_framework.response import Response
+from rest_framework.decorators import action
 from .models import WomanSerializer
 from django.forms import model_to_dict  # метод возвращает словарь из модели
 
@@ -29,12 +30,42 @@ menu = [
 
 # можно руками наследоваться от всех классов , что в ModelViewSet. А можно исключить не нужные миксины и ограничить до нужного поведения
 class WomanViewSet(viewsets.ModelViewSet):
-    """ CRUD. класс которые объеденяет все остальные generics, чтобы не дублировать код как представлен в классах ниже
+    """
+    http://127.0.0.1:8000/women/api/v1/womans/
+    CRUD. класс которые объеденяет все остальные generics, чтобы не дублировать код как представлен в классах ниже
     как по всей таблице так и по id
     https://www.django-rest-framework.org/api-guide/viewsets/#viewset-actions
     """
     queryset = Woman.objects.all()
     serializer_class = WomanSerializer
+
+    def get_queryset(self):
+        """ переопределили queryset. он теперь не исползуется. а выборка будет как в запросе ниже
+        если необходима выборка по ключу http://127.0.0.1:8000/women/api/v1/womans/1/
+        """
+        pk = self.kwargs.get("pk")
+        if not pk:
+            return Woman.objects.all()[:3]  # ограничиваем выборку
+        return Woman.objects.filter(pk=pk)
+
+    @action(methods=['get'], detail=True)
+    def categor(self, request, pk=None):
+        """
+        url формируется на основании имени функции
+        pk передается в url
+        http://127.0.0.1:8000/women/api/v1/womans/1/categor/?format=json
+        """
+        cats = Category.objects.get(pk=pk)
+        return Response({cats.__dict__['name']})
+
+    @action(detail=False)  # methods можно не указывать если только гет подргузумевает.
+    def categorall(self, request):
+        """
+        пот таком запросе необходимо указывать detail=False
+        http://127.0.0.1:8000/women/api/v1/womans/categorall/
+        """
+        cats = Category.objects.all()
+        return Response(cats.values())
 
 
 class WomanApi(generics.ListAPIView):

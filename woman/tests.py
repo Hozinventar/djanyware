@@ -14,3 +14,6 @@ res = r.put("http://127.0.0.1:8000/api/v1/womanslist/6/", json={"title": "erunda
 # res = r.delete("http://127.0.0.1:8000/api/v1/womans4/5/")  # не указываем обязательное поле {"cat_id":["Это поле обязательно для заполнения."]}
 print(res.text)
 print(res.status_code)
+
+# http://127.0.0.1:8000/women/api/v1/womans/1/categor/?format=json
+# http://127.0.0.1:8000/women/api/v1/womans/categorall/

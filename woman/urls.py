@@ -3,9 +3,12 @@ from django.views.decorators.cache import cache_page
 from .views import *
 from rest_framework import routers
 
-rout = routers.SimpleRouter()
+# rout = routers.SimpleRouter()
+rout = routers.DefaultRouter()  # если обратиться к корневому url , то покажет все доступные url для методов
 rout.register(r'womans', WomanViewSet)  # регистрируем рутер , чтобы затем использовать ViewSet и не дулировать строки с pk id
-
+rout.register(r'womans', WomanViewSet, basename='woman')  # basename когда в WomanViewSet необходимо переопределить queryset на get_queryset,
+# то в WomanViewSet queryset можно закоментировать, но тогда в basename прописать имя модели.
+print(rout.urls)  # url генерируется на основе имени модели
 
 
 urlpatterns = [
