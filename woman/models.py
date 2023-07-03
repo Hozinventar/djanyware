@@ -5,6 +5,8 @@ import codecs
 from rest_framework import serializers
 from rest_framework.renderers import JSONRenderer
 from rest_framework.parsers import JSONParser
+from django.conf import settings
+from django.contrib.auth.models import User
 
 
 class Woman(models.Model):
@@ -19,6 +21,12 @@ class Woman(models.Model):
     is_published = models.BooleanField(default=True)
     cat = models.ForeignKey("Category", on_delete=models.PROTECT)  # запрещаем удалять категории у которых есть ссылки на категрию
     # добавил null=True так как данные уже были заполнены. А из-за связей миграция не проходила
+    # userr = models.ForeignKey("User", verbose_name="кто создал запись", on_delete=models.CASCADE, default=1, blank=True, null=True)
+    userr = models.ForeignKey(User, verbose_name="кто создал запись", on_delete=models.CASCADE, default=1, blank=True, null=True)
+    # author = models.ForeignKey(
+    #     settings.AUTH_USER_MODEL,
+    #     on_delete=models.CASCADE,
+    # )
 
     def __repr__(self):
         return self.title
@@ -49,8 +57,8 @@ class WomanSerializer(serializers.ModelSerializer):
     """ ресты уже готовый сериализатор"""
     class Meta:
         model = Woman
-        fields = ('title', "content", 'cat')  # какие поля возвращаем клиенту. даже если в URL/pk передать ключ все будет работать.
-        # fields = "__all__"  # если вернуть все поля модели
+        # fields = ('title', "content", 'cat')  # какие поля возвращаем клиенту. даже если в URL/pk передать ключ все будет работать.
+        fields = "__all__"  # если вернуть все поля модели
 
 
 class WomanSerializer2(serializers.Serializer):

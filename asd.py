@@ -8,8 +8,14 @@ disable_warnings()
 import django
 django.setup()
 
+from django.contrib.auth.models import User
 from woman.models import *
 # myuser, created = Human.objects.get_or_create(name="Аркадий2", defaults={'age': 12, 'work': Work(name="Foo Bar")})
+
+a = Woman.objects.all()
+a1 = Woman.objects.get(pk=1)
+u = User.objects.all().values()
+
 print()
 
 
