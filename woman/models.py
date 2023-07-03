@@ -22,7 +22,7 @@ class Woman(models.Model):
     cat = models.ForeignKey("Category", on_delete=models.PROTECT)  # запрещаем удалять категории у которых есть ссылки на категрию
     # добавил null=True так как данные уже были заполнены. А из-за связей миграция не проходила
     # userr = models.ForeignKey("User", verbose_name="кто создал запись", on_delete=models.CASCADE, default=1, blank=True, null=True)
-    userr = models.ForeignKey(User, verbose_name="кто создал запись", on_delete=models.CASCADE, default=1, blank=True, null=True)
+    user = models.ForeignKey(User, verbose_name="кто создал запись", on_delete=models.CASCADE) #, default=1, blank=True, null=True)
     # author = models.ForeignKey(
     #     settings.AUTH_USER_MODEL,
     #     on_delete=models.CASCADE,
@@ -55,10 +55,14 @@ class Woman(models.Model):
 
 class WomanSerializer(serializers.ModelSerializer):
     """ ресты уже готовый сериализатор"""
+    user = serializers.HiddenField(default=serializers.CurrentUserDefault()) # таким способом мы прячем поле. в json не попадает.
+    # при этом прописываем правило для автозаполнения
+
     class Meta:
         model = Woman
         # fields = ('title', "content", 'cat')  # какие поля возвращаем клиенту. даже если в URL/pk передать ключ все будет работать.
         fields = "__all__"  # если вернуть все поля модели
+        # exclude = ['user']  # скрываем поле.  или fields или exclude должно быть указано
 
 
 class WomanSerializer2(serializers.Serializer):

@@ -40,4 +40,10 @@ urlpatterns = [
     path('api/v1/womans3', WomanApi3.as_view()),
     path('api/v1/womans4', WomanApi4.as_view()),
     path('api/v1/womans4/<int:pk>/', WomanApi4.as_view()),  # тестируем PUT
+    path('api/v1/womangetpermisson', WomanApiListPermission.as_view()),
+    path('api/v1/womanupdatepermisson/<int:pk>/', WomanApiUpdatePermission.as_view()),
+    path('api/v1/womandelpermisson/<int:pk>/', WomanApiCDestroyPermission.as_view()),
+
+
+
 ]

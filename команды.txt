@@ -32,8 +32,19 @@ python manage.py sqlmigrate woman 0001
 Теперь создаем таблицу в БД
 python manage.py migrate
 
+Если миграции удалены, но БД и файл models не менялись.
+Можно создать первую миграцию
+python manage.py makemigrations
+и далее
+python manage.py migrate woman --fake-initial
+После этого уже можно изменять файл моделей и выполнять миграции как раньше.
+https://docs.djangoproject.com/en/4.2/ref/django-admin/#cmdoption-migrate-fake-initial
 
-Работа с БД руками
+
+Работа с БД
+https://docs.djangoproject.com/en/4.2/topics/db/queries/#queryset-model-example
+https://docs.djangoproject.com/en/4.2/ref/models/querysets/
+
 python manage.py shell
 
 from woman.models import Woman
