@@ -45,6 +45,10 @@ urlpatterns = [
     path('api/v1/womanupdatepermisson/<int:pk>/', WomanApiUpdatePermission.as_view()),
     path('api/v1/womandelpermisson/<int:pk>/', WomanApiCDestroyPermission.as_view()),
 
+    # djoser Из документации
+    # url(r'^auth/', include('djoser.urls')),
+    # url(r'^auth/', include('djoser.urls.authtoken')),
 
-
+    path('api/v1/auth/', include('djoser.urls')),
+    re_path(r'^auth/', include('djoser.urls.authtoken')),
 ]

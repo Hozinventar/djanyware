@@ -9,6 +9,8 @@ from django.contrib.auth.views import LoginView
 from django.contrib.auth import logout, login
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.urls import reverse_lazy
+from rest_framework.authentication import TokenAuthentication
+
 from .models import *
 from .forms import *
 from .utils import DataMixin
@@ -18,7 +20,7 @@ from rest_framework import generics, viewsets
 from rest_framework.views import APIView  # самый базовый функционал. все от него наследуются
 from rest_framework.response import Response
 from rest_framework.decorators import action
-from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAdminUser
+from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAdminUser, IsAuthenticated
 from .models import WomanSerializer
 from django.forms import model_to_dict  # метод возвращает словарь из модели
 from .permissions import *
@@ -80,7 +82,10 @@ class WomanApiListPermission(generics.ListCreateAPIView):
 class WomanApiUpdatePermission(generics.RetrieveUpdateAPIView):
     queryset = Woman.objects.all()
     serializer_class = WomanSerializer
-    permission_classes = (IsOwnerOrReadOnly,)
+    # permission_classes = (IsOwnerOrReadOnly,)       # кто может видеть.
+    permission_classes = (IsAuthenticated,)       # кто может видеть.
+    authentication_classes = (TokenAuthentication,)  # переопределяем, что только через токен можно работать с этим методом
+    # для этого permission_classes должен быть IsAuthenticated. иначе работать по токену не будет
 
 
 class WomanApiCDestroyPermission(generics.RetrieveDestroyAPIView):

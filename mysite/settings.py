@@ -46,7 +46,11 @@ INSTALLED_APPS = [
     'django_celery_results',  # celerymy
     'django_celery_beat',
     'rest_framework',
-    'woman.apps.WomanConfig'
+    'woman.apps.WomanConfig',
+    'rest_framework.authtoken',
+    'djoser',  # могут быть проблемы при миграции поэтому
+    # python manage.py makemigrations authtoken ; python manage.py migrate authtoken
+
 ]
 
 MIDDLEWARE = [
@@ -190,5 +194,10 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAuthenticated',  # если мы хотим чтобы только авторизованные могли использовать РЕСТ
         # либо переопределить на другой класс проверки авторизации,
         # ! однако если в классе указан атрибут авторизации, то будет использовать он, а те тот что по дефолту.
-    ]
+    ],
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+            'rest_framework.authentication.TokenAuthentication',  # аутантефикация по токену
+            'rest_framework.authentication.BasicAuthentication',  # аутантефикация по сессии по умолчанию указаны
+            'rest_framework.authentication.SessionAuthentication',  # аутантефикация по сессии
+        ),
 }
