@@ -185,5 +185,10 @@ REST_FRAMEWORK = {
         'rest_framework.renderers.JSONRenderer',
         'rest_framework.renderers.BrowsableAPIRenderer',  # если закоментировать эту сроку, то через браузер можно получить только гет.
         # ни какого СВАГЕРа
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',  # если мы хотим чтобы только авторизованные могли использовать РЕСТ
+        # либо переопределить на другой класс проверки авторизации,
+        # ! однако если в классе указан атрибут авторизации, то будет использовать он, а те тот что по дефолту.
     ]
 }

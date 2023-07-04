@@ -21,6 +21,7 @@ from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAdminUser
 from .models import WomanSerializer
 from django.forms import model_to_dict  # метод возвращает словарь из модели
+from .permissions import *
 
 menu = [
     {"title": "О сайте", "url_name": "about"},
@@ -69,7 +70,7 @@ class WomanViewSet(viewsets.ModelViewSet):
         return Response(cats.values())
 
 
-# поиграться с правами. Когда нужно разраничить
+#------------------ поиграться с правами. Когда нужно разраничить
 class WomanApiListPermission(generics.ListCreateAPIView):
     queryset = Woman.objects.all()
     serializer_class = WomanSerializer
@@ -79,25 +80,14 @@ class WomanApiListPermission(generics.ListCreateAPIView):
 class WomanApiUpdatePermission(generics.RetrieveUpdateAPIView):
     queryset = Woman.objects.all()
     serializer_class = WomanSerializer
-
-
-from rest_framework import permissions
-class IsAdminOrReadOnly(permissions.BasePermission):
-    """ все права наследуются от этого класса BasePermission пример прав скопировал из IsAdminUser
-    Такой класс дает всем доступ по ГЕТ , но удаление только админам
-    """
-    def has_permission(self, request, view):
-        if request.method in permissions.SAFE_METHODS:
-            return True
-
-        return bool(request.user and request.user.is_staff)
+    permission_classes = (IsOwnerOrReadOnly,)
 
 
 class WomanApiCDestroyPermission(generics.RetrieveDestroyAPIView):
     queryset = Woman.objects.all()
     serializer_class = WomanSerializer
     permission_classes = (IsAdminOrReadOnly,)  # кастомный класс. создал выше
-# конце правам
+# ----------------- конце правам
 
 
 class WomanApi(generics.ListAPIView):
