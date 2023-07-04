@@ -1,11 +1,11 @@
 from django.urls import path, include, re_path
 from django.views.decorators.cache import cache_page
 from .views import *
-from rest_framework import routers
+from rest_framework import routers, urls
 
 # rout = routers.SimpleRouter()
 rout = routers.DefaultRouter()  # если обратиться к корневому url , то покажет все доступные url для методов
-rout.register(r'womans', WomanViewSet)  # регистрируем рутер , чтобы затем использовать ViewSet и не дулировать строки с pk id
+# rout.register(r'womans', WomanViewSet)  # регистрируем рутер , чтобы затем использовать ViewSet и не дулировать строки с pk id
 rout.register(r'womans', WomanViewSet, basename='woman')  # basename когда в WomanViewSet необходимо переопределить queryset на get_queryset,
 # то в WomanViewSet queryset можно закоментировать, но тогда в basename прописать имя модели.
 print(rout.urls)  # url генерируется на основе имени модели
@@ -29,6 +29,7 @@ urlpatterns = [
     path('post/<slug:post_slug>/', ShowPost.as_view(), name="post_slug"),
     # path('category/<int:id>/', show_by_category, name="categoryy"),  # через функцию
     path('category/<slug:cat_slug>/', CategoryBy.as_view(), name="category"),
+    path('api/v1/', include(urls)),  # дефолтные маршруты rest_framework
     path('api/v1/', include(rout.urls)),  # стандартный простой способ создать api по таблице. внимательно рут указан в rout. не тут
     path('api/v1/womansmodels', WomanViewSet.as_view({'get': 'list'})),  # необходимо указывать и переопределять методы
     path('api/v1/womansmodels/<int:pk>/', WomanViewSet.as_view({'put': 'update'})),
