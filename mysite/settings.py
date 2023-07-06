@@ -201,6 +201,8 @@ REST_FRAMEWORK = {
             'rest_framework.authentication.TokenAuthentication',  # аутантефикация по токену. у класса необходимо прописывать метод
             'rest_framework_simplejwt.authentication.JWTAuthentication',  # аутантефикация через JWT. прописывать не обязательно. все методы будут использовать его по умочанию
         ),
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
+    'PAGE_SIZE': 5  # ограничение глобальное. для всех методов.
 }
 
 from datetime import timedelta

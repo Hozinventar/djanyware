@@ -103,10 +103,12 @@ class WomanApi(generics.ListAPIView):
     serializer_class = WomanSerializer
 
 
+from .paginations import WomanApiListPagin
 class WomanApiList(generics.ListCreateAPIView):
     """ GET и POST запросы. тот же гет как в ListAPIView, но еще и пост """
     queryset = Woman.objects.all()
     serializer_class = WomanSerializer
+    pagination_class = WomanApiListPagin  # переопределили дефолтные настройки
 
 
 class WomanApiUpdate(generics.UpdateAPIView):
