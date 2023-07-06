@@ -2,6 +2,11 @@ from django.urls import path, include, re_path
 from django.views.decorators.cache import cache_page
 from .views import *
 from rest_framework import routers, urls
+from rest_framework_simplejwt.views import (
+    TokenObtainPairView,
+    TokenRefreshView,
+    TokenVerifyView
+)
 
 # rout = routers.SimpleRouter()
 rout = routers.DefaultRouter()  # если обратиться к корневому url , то покажет все доступные url для методов
@@ -51,4 +56,8 @@ urlpatterns = [
 
     path('api/v1/auth/', include('djoser.urls')),
     re_path(r'^auth/', include('djoser.urls.authtoken')),
+
+    path('api/v1/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),  # по логину и паролю предоставляет токен
+    path('api/v1/token/verify', TokenVerifyView.as_view(), name='token_obtain_pair'),
+    path('api/v1/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),  # по рефрешу получить новый аксес токен.
 ]

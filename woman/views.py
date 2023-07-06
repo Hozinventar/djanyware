@@ -76,16 +76,18 @@ class WomanViewSet(viewsets.ModelViewSet):
 class WomanApiListPermission(generics.ListCreateAPIView):
     queryset = Woman.objects.all()
     serializer_class = WomanSerializer
-    permission_classes = (IsAuthenticatedOrReadOnly,)
+    # permission_classes = (IsAuthenticatedOrReadOnly,)
+    permission_classes = (IsAuthenticated,)       # кто может видеть.
+    authentication_classes = (TokenAuthentication,)  # переопределяем, что только через токен можно работать с этим методом
+    # для этого permission_classes должен быть IsAuthenticated. иначе работать по токену не будет
 
 
 class WomanApiUpdatePermission(generics.RetrieveUpdateAPIView):
     queryset = Woman.objects.all()
     serializer_class = WomanSerializer
-    # permission_classes = (IsOwnerOrReadOnly,)       # кто может видеть.
-    permission_classes = (IsAuthenticated,)       # кто может видеть.
-    authentication_classes = (TokenAuthentication,)  # переопределяем, что только через токен можно работать с этим методом
-    # для этого permission_classes должен быть IsAuthenticated. иначе работать по токену не будет
+    permission_classes = (IsOwnerOrReadOnly,)       # кто может видеть.
+    # permission_classes = (IsAuthenticated,)       # кто может видеть.
+    # для JWT authentication_classes необходимо оставить пустым
 
 
 class WomanApiCDestroyPermission(generics.RetrieveDestroyAPIView):
