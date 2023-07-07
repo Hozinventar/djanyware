@@ -27,6 +27,13 @@ class Woman(models.Model):
     #     settings.AUTH_USER_MODEL,
     #     on_delete=models.CASCADE,
     # )
+    # @property
+    # def _user(self):
+    #     return self.user
+    #
+    # @property.setter
+    # def id(self, x):
+    #     self.user_id = User.objects.get(pk=)
 
     def __repr__(self):
         return self.title

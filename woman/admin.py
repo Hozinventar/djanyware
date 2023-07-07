@@ -6,14 +6,14 @@ from django.utils.safestring import mark_safe
 
 
 class WomanAdmin(admin.ModelAdmin):
-    list_display = ('id', "title", "content", "get_html_photo", "time_create", "is_published", "cat")
+    list_display = ('id', "title", "content", "get_html_photo", "time_create", "is_published", "cat", "user")
     list_display_links = ("title",)  # если не указывать, то автоматом будет только pk(id)
     # если указать,то только эти поля будут иметь ссылку на редактирование
     search_fields = ("title", "content")  # по каким полям осуществлять поиск.
     list_editable = ("is_published", "cat")  # эти поля можно поменять в режиме отображения список
-    list_filter = ("is_published", "time_create") # по этим полям можно фильтроваь в режиме отображения список
+    list_filter = ("is_published", "time_create")  # по этим полям можно фильтроваь в режиме отображения список. панель фильтра справа
     prepopulated_fields = {"slug": ("title",)}  # автозаполнение на основе поля name когда редактируем
-    fields = ("title", "slug", "content", "photo", "get_html_photo", "time_create", "time_update", "cat")  # переопределяем поля, что можно изменить
+    fields = ("title", "slug", "content", "photo", "get_html_photo", "time_create", "time_update", "cat", "user")  # переопределяем поля, что можно изменить
     readonly_fields = ("time_create", "time_update", "get_html_photo")  # поля что нельзя редактировать. только для чтения.
     # Должны быть добавлены в атрибут fields
 
@@ -24,6 +24,10 @@ class WomanAdmin(admin.ModelAdmin):
         if object.photo:    # Если есть фото то отобразить, если не прописать условие ,
             # то так где нет фотки страница не сможет быть показана
             return mark_safe(f"<img src='{object.photo.url}' width=50>")
+
+    def save_model(self, request, obj, form, change):
+        obj.user = request.user
+        super().save_model(request, obj, form, change)
 
     get_html_photo.short_description = "миниатюра"  # для того чтобы переопределить название в таблице
 
